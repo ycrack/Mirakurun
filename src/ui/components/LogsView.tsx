@@ -13,11 +13,10 @@
    See the License for the specific language governing permissions and
    limitations under the License.
 */
-import EventEmitter from "eventemitter3";
-import * as React from "react";
-import { useState, useEffect, useRef } from "react";
-import { Client as RPCClient } from "jsonrpc2-ws";
-import { JoinParams } from "../../../lib/Mirakurun/rpc.d";
+import type { EventEmitter } from "eventemitter3";
+import React, { useState, useEffect, useRef } from "react";
+import type { Client as RPCClient } from "jsonrpc2-ws";
+import type { JoinParams } from "../../../lib/Mirakurun/rpc.d";
 import "./Logs.css";
 
 let _itemId = 0;

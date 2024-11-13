@@ -13,14 +13,14 @@
    See the License for the specific language governing permissions and
    limitations under the License.
 */
-import * as net from "net";
-import * as http from "http";
-import RPCServer, { Socket } from "jsonrpc2-ws/lib/server";
+import type { Socket as NetSocket } from "node:net";
+import type { IncomingMessage, Server } from "node:http";
+import RPCServer, { type Socket } from "jsonrpc2-ws/lib/server";
 import * as log from "./log";
 import _ from "./_";
 import status from "./status";
 import Event from "./Event";
-import { EventMessage } from "./Event";
+import type { EventMessage } from "./Event";
 import { event as logEvent } from "./log";
 import { isPermittedHost, isPermittedIPAddress } from "./system";
 import { getStatus } from "./api/status";
@@ -45,7 +45,7 @@ export interface NotifyParams<T> {
  * @internal
  * @experimental
  */
-export function createRPCServer(server: http.Server): RPCServer {
+export function createRPCServer(server: Server): RPCServer {
 
     const rpc = new RPCServer({
         pingInterval: 1000 * 30,
@@ -121,7 +121,7 @@ class NotifyManager<T> {
     }
 }
 
-function serverOnUpgrade(this: RPCServer["wss"], req: http.IncomingMessage, socket: net.Socket, head: Buffer): void {
+function serverOnUpgrade(this: RPCServer["wss"], req: IncomingMessage, socket: NetSocket, head: Buffer): void {
 
     if (req.socket.remoteAddress && !isPermittedIPAddress(req.socket.remoteAddress)) {
         socket.write("HTTP/1.1 403 Forbidden\r\n\r\n");
@@ -140,7 +140,7 @@ function serverOnUpgrade(this: RPCServer["wss"], req: http.IncomingMessage, sock
     this.handleUpgrade(req, socket, head, ws => this.emit("connection", ws, req));
 }
 
-function rpcConnection(socket: Socket, req: http.IncomingMessage): void {
+function rpcConnection(socket: Socket, req: IncomingMessage): void {
     // connected
     ++status.rpcCount;
 

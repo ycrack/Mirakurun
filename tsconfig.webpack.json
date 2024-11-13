@@ -7,7 +7,6 @@
     "moduleResolution": "node",
     "esModuleInterop": false,
     "jsx": "react",
-    "allowSyntheticDefaultImports": true,
     "lib": [
       "es2020",
       "dom"

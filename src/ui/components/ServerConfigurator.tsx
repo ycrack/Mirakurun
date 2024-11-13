@@ -13,9 +13,8 @@
    See the License for the specific language governing permissions and
    limitations under the License.
 */
-import EventEmitter from "eventemitter3";
-import * as React from "react";
-import { useState, useEffect, useRef } from "react";
+import type { EventEmitter } from "eventemitter3";
+import React, { useState, useEffect, useRef } from "react";
 import {
     Stack,
     Separator,
@@ -34,8 +33,8 @@ import {
     DialogFooter,
 } from "@fluentui/react";
 import { Validator as IPValidator } from "ip-num/Validator"
-import { UIState } from "../index";
-import { ConfigServer } from "../../../api";
+import type { UIState } from "../index";
+import type { ConfigServer } from "../../../api";
 
 const configAPI = "/api/config/server";
 

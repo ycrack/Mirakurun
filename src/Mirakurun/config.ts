@@ -13,13 +13,13 @@
    See the License for the specific language governing permissions and
    limitations under the License.
 */
-import { execSync } from "child_process";
-import { dirname } from "path";
-import { hostname } from "os";
-import * as fs from "fs";
+import { execSync } from "node:child_process";
+import { dirname } from "node:path";
+import { hostname } from "node:os";
+import fs from "node:fs";
 import * as yaml from "js-yaml";
-import * as ipnum from "ip-num";
-import * as common from "./common";
+import { Validator } from "ip-num/Validator";
+import type { ChannelType } from "./common";
 import * as log from "./log";
 
 type Writable<T> = { -readonly [K in keyof T]: T[K] };
@@ -80,7 +80,7 @@ export interface Tuner {
     readonly name: string;
 
     // GR / BS / CS / SKY
-    readonly types: common.ChannelType[];
+    readonly types: ChannelType[];
 
     // for chardev / dvb
     readonly command?: string;
@@ -103,7 +103,7 @@ export interface Channel {
     readonly name: string;
 
     // GR / BS / CS / SKY
-    readonly type: common.ChannelType;
+    readonly type: ChannelType;
 
     // passed to tuning command
     readonly channel: string;
@@ -230,7 +230,7 @@ export function loadServer(): Server {
         const validRanges: string[] = [];
 
         for (const range of config.allowIPv4CidrRanges) {
-            const [valid, errors] = ipnum.Validator.isValidIPv4CidrRange(range);
+            const [valid, errors] = Validator.isValidIPv4CidrRange(range);
             if (valid) {
                 validRanges.push(range);
                 continue;
@@ -248,7 +248,7 @@ export function loadServer(): Server {
         const validRanges: string[] = [];
 
         for (const range of config.allowIPv6CidrRanges) {
-            const [valid, errors] = ipnum.Validator.isValidIPv6CidrRange(range);
+            const [valid, errors] = Validator.isValidIPv6CidrRange(range);
             if (valid) {
                 validRanges.push(range);
                 continue;

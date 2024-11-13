@@ -13,8 +13,7 @@
    See the License for the specific language governing permissions and
    limitations under the License.
 */
-import * as React from "react";
-import { useState } from "react";
+import React from "react";
 import {
     Stack,
     Separator,
@@ -26,7 +25,7 @@ import "./HeartView.css";
 
 const HeartView: React.FC = () => {
 
-    const [consented, setConsented] = useState<boolean>(false);
+    const [consented, setConsented] = React.useState<boolean>(false);
 
     return (
         <Stack tokens={{ childrenGap: "16 0" }} style={{ margin: "16px 0 8px" }} className="heart-view">

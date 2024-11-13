@@ -13,9 +13,9 @@
    See the License for the specific language governing permissions and
    limitations under the License.
 */
-import * as stream from "stream";
-import * as fs from "fs";
-import * as path from "path";
+import stream from "node:stream";
+import fs from "node:fs";
+import path from "node:path";
 
 if (process.argv.length < 3) {
     console.error("Mirakurun EPG Dump Test Program");

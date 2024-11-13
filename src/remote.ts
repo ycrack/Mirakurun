@@ -15,7 +15,7 @@
 */
 import * as apid from "../api";
 import Client from "./client";
-import { IncomingMessage } from "http";
+import type { IncomingMessage } from "node:http";
 
 process.title = "Mirakurun: Remote";
 

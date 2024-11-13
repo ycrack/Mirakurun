@@ -13,10 +13,9 @@
    See the License for the specific language governing permissions and
    limitations under the License.
 */
-import EventEmitter from "eventemitter3";
-import * as React from "react";
-import { useState, useEffect } from "react";
-import * as ReactDOM from "react-dom";
+import { EventEmitter } from "eventemitter3";
+import React, { useState, useEffect } from "react";
+import { createRoot } from "react-dom/client";
 import {
     createTheme,
     loadTheme,
@@ -74,8 +73,8 @@ const iconSrcMap = {
     active: "icon-active.svg"
 };
 
-let statusRefreshInterval: any;
-let servicesRefreshInterval: any;
+let statusRefreshInterval: ReturnType<typeof setInterval>;
+let servicesRefreshInterval: ReturnType<typeof setInterval>;
 
 function idleStatusChecker(): boolean {
 
@@ -201,7 +200,7 @@ rpc.methods.set("events", async (socket, { array }: NotifyParams<EventMessage>) 
     uiStateEvents.emit("data:events", array);
 });
 
-rpc.methods.set("logs", (socket, { array }: NotifyParams<string> ) => {
+rpc.methods.set("logs", (socket, { array }: NotifyParams<string>) => {
     uiStateEvents.emit("data:logs", array);
 });
 
@@ -292,10 +291,8 @@ const Content = () => {
     );
 };
 
-ReactDOM.render(
-    <Content />,
-    document.getElementById("root")
-);
+createRoot(document.getElementById("root")!)
+    .render(<Content />);
 
 // dark theme
 const myTheme = createTheme({

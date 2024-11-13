@@ -13,14 +13,13 @@
    See the License for the specific language governing permissions and
    limitations under the License.
 */
-import { join, dirname } from "path";
-import { promises as fsPromises } from "fs";
-import * as fs from "fs";
+import { join, dirname } from "node:path";
+import fs from "node:fs";
 import * as log from "./log";
 import * as db from "./db";
 import _ from "./_";
 import Event from "./Event";
-import ChannelItem from "./ChannelItem";
+import type ChannelItem from "./ChannelItem";
 import ServiceItem from "./ServiceItem";
 
 const { LOGO_DATA_DIR_PATH } = process.env;
@@ -43,7 +42,7 @@ export default class Service {
         }
 
         try {
-            return (await fsPromises.stat(Service.getLogoDataPath(networkId, logoId))).mtimeMs;
+            return (await fs.promises.stat(Service.getLogoDataPath(networkId, logoId))).mtimeMs;
         } catch (e) {
             return 0;
         }
@@ -56,7 +55,7 @@ export default class Service {
         }
 
         try {
-            return (await fsPromises.stat(Service.getLogoDataPath(networkId, logoId))).isFile();
+            return (await fs.promises.stat(Service.getLogoDataPath(networkId, logoId))).isFile();
         } catch (e) {
             return false;
         }
@@ -69,7 +68,7 @@ export default class Service {
         }
 
         try {
-            return await fsPromises.readFile(Service.getLogoDataPath(networkId, logoId));
+            return await fs.promises.readFile(Service.getLogoDataPath(networkId, logoId));
         } catch (e) {
             return null;
         }
@@ -82,7 +81,7 @@ export default class Service {
         const path = Service.getLogoDataPath(networkId, logoId);
 
         try {
-            await fsPromises.writeFile(path, data, { encoding: "binary" });
+            await fs.promises.writeFile(path, data, { encoding: "binary" });
         } catch (e) {
             if (retrying === false) {
                 // mkdir if not exists
@@ -106,7 +105,7 @@ export default class Service {
     }
 
     private _items: ServiceItem[] = [];
-    private _saveTimerId: NodeJS.Timer;
+    private _saveTimerId: NodeJS.Timeout;
 
     constructor() {
         this._load();

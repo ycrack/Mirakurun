@@ -15,9 +15,9 @@
 */
 Buffer.poolSize = 0; // disable memory pool
 
-require("dotenv").config();
-import { execSync } from "child_process";
-import { createHash } from "crypto";
+import "dotenv/config";
+import { execSync } from "node:child_process";
+import { createHash } from "node:crypto";
 
 if (process.platform === "linux") {
     if (process.getuid() === 0) {

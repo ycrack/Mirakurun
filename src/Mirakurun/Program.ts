@@ -18,7 +18,7 @@ import * as common from "./common";
 import * as log from "./log";
 import * as db from "./db";
 import _ from "./_";
-import Event, { EventType } from "./Event";
+import Event, { type EventType } from "./Event";
 import queue from "./queue";
 
 export function getProgramItemId(networkId: number, serviceId: number, eventId: number): number {
@@ -28,8 +28,8 @@ export function getProgramItemId(networkId: number, serviceId: number, eventId: 
 export default class Program {
 
     private _itemMap = new Map<number, db.Program>();
-    private _saveTimerId: NodeJS.Timer;
-    private _emitTimerId: NodeJS.Timer;
+    private _saveTimerId: NodeJS.Timeout;
+    private _emitTimerId: NodeJS.Timeout;
     private _emitRunning = false;
     private _emitPrograms = new Map<db.Program, EventType>();
     private _programGCInterval = _.config.server.programGCInterval || 1000 * 60 * 60; // 1 hour
@@ -186,9 +186,9 @@ export default class Program {
             ) {
                 const itemEndAt = item.startAt + item.duration;
                 if ((
-                        (added.startAt <= item.startAt && item.startAt < addedEndAt) ||
-                        (item.startAt <= added.startAt && added.startAt < itemEndAt)
-                    ) &&
+                    (added.startAt <= item.startAt && item.startAt < addedEndAt) ||
+                    (item.startAt <= added.startAt && added.startAt < itemEndAt)
+                ) &&
                     (!item._pf || added._pf)
                 ) {
                     this.remove(item.id);

@@ -13,14 +13,14 @@
    See the License for the specific language governing permissions and
    limitations under the License.
 */
-import { Writable } from "stream";
-import * as common from "./common";
+import type { Writable } from "node:stream";
+import { sleep, type ChannelType, type UserRequest, type User } from "./common";
 import * as log from "./log";
-import * as db from "./db";
+import type { Program, Service } from "./db";
 import _ from "./_";
 import TunerDevice from "./TunerDevice";
-import ChannelItem from "./ChannelItem";
-import ServiceItem from "./ServiceItem";
+import type ChannelItem from "./ChannelItem";
+import type ServiceItem from "./ServiceItem";
 import TSFilter from "./TSFilter";
 import TSDecoder from "./TSDecoder";
 
@@ -48,7 +48,7 @@ export default class Tuner {
         return null;
     }
 
-    typeExists(type: common.ChannelType): boolean {
+    typeExists(type: ChannelType): boolean {
 
         const l = this._devices.length;
         for (let i = 0; i < l; i++) {
@@ -60,7 +60,7 @@ export default class Tuner {
         return false;
     }
 
-    initChannelStream(channel: ChannelItem, userReq: common.UserRequest, output: Writable): Promise<TSFilter> {
+    initChannelStream(channel: ChannelItem, userReq: UserRequest, output: Writable): Promise<TSFilter> {
 
         let networkId: number;
 
@@ -79,7 +79,7 @@ export default class Tuner {
         }, output);
     }
 
-    initServiceStream(service: ServiceItem, userReq: common.UserRequest, output: Writable): Promise<TSFilter> {
+    initServiceStream(service: ServiceItem, userReq: UserRequest, output: Writable): Promise<TSFilter> {
 
         return this._initTS({
             ...userReq,
@@ -92,7 +92,7 @@ export default class Tuner {
         }, output);
     }
 
-    initProgramStream(program: db.Program, userReq: common.UserRequest, output: Writable): Promise<TSFilter> {
+    initProgramStream(program: Program, userReq: UserRequest, output: Writable): Promise<TSFilter> {
 
         return this._initTS({
             ...userReq,
@@ -108,7 +108,7 @@ export default class Tuner {
 
     async getEPG(channel: ChannelItem, time?: number): Promise<void> {
 
-        let timeout: NodeJS.Timer;
+        let timeout: NodeJS.Timeout;
         if (!time) {
             time = _.config.server.epgRetrievalTime || 1000 * 60 * 10;
         }
@@ -151,7 +151,7 @@ export default class Tuner {
         });
     }
 
-    async getServices(channel: ChannelItem): Promise<db.Service[]> {
+    async getServices(channel: ChannelItem): Promise<Service[]> {
 
         const tsFilter = await this._initTS({
             id: "Mirakurun:getServices()",
@@ -163,14 +163,14 @@ export default class Tuner {
                 parseSDT: true
             }
         });
-        return new Promise<db.Service[]>((resolve, reject) => {
+        return new Promise<Service[]>((resolve, reject) => {
 
             let network = {
                 networkId: -1,
                 areaCode: -1,
                 remoteControlKeyId: -1
             };
-            let services: db.Service[] = null;
+            let services: Service[] = null;
 
             setTimeout(() => tsFilter.close(), 20000);
 
@@ -274,7 +274,7 @@ export default class Tuner {
         return this;
     }
 
-    private _initTS(user: common.User, dest?: Writable): Promise<TSFilter> {
+    private _initTS(user: User, dest?: Writable): Promise<TSFilter> {
 
         return new Promise<TSFilter>((resolve, reject) => {
 
@@ -308,12 +308,12 @@ export default class Tuner {
                         if (setting.networkId !== undefined && setting.parseEIT === true) {
                             remoteDevice.getRemotePrograms({ networkId: setting.networkId })
                                 .then(async programs => {
-                                    await common.sleep(1000);
+                                    await sleep(1000);
                                     _.program.findByNetworkIdAndReplace(setting.networkId, programs);
                                     for (const service of _.service.findByNetworkId(setting.networkId)) {
                                         service.epgReady = true;
                                     }
-                                    await common.sleep(1000);
+                                    await sleep(1000);
                                 })
                                 .then(() => resolve(null))
                                 .catch(err => reject(err));
@@ -404,7 +404,7 @@ export default class Tuner {
         });
     }
 
-    private _getDevicesByType(type: common.ChannelType): TunerDevice[] {
+    private _getDevicesByType(type: ChannelType): TunerDevice[] {
 
         const devices = [];
 

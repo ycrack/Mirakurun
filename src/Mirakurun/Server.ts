@@ -13,15 +13,15 @@
    See the License for the specific language governing permissions and
    limitations under the License.
 */
-import * as fs from "fs";
-import * as http from "http";
-import * as express from "express";
-import * as cors from "cors";
-import * as mime from "mime";
-import * as openapi from "express-openapi";
-import * as morgan from "morgan";
+import fs from "node:fs";
+import http from "node:http";
+import express from "express";
+import cors from "cors";
+import mime from "mime";
+import { initialize } from "express-openapi";
+import morgan from "morgan";
 import * as yaml from "js-yaml";
-import { OpenAPIV2 } from "openapi-types";
+import type { OpenAPIV2 } from "openapi-types";
 import RPCServer from "jsonrpc2-ws/lib/server";
 import { sleep } from "./common";
 import * as log from "./log";
@@ -30,7 +30,7 @@ import regexp from "./regexp";
 import _ from "./_";
 import { createRPCServer, initRPCNotifier } from "./rpc";
 
-const pkg = require("../../package.json");
+import pkg from "../../package.json";
 
 class Server {
 
@@ -145,7 +145,7 @@ class Server {
         const api = yaml.load(fs.readFileSync("api.yml", "utf8")) as OpenAPIV2.Document;
         api.info.version = pkg.version;
 
-        openapi.initialize({
+        initialize({
             app: app,
             apiDoc: api,
             docsPath: "/docs",

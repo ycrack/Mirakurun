@@ -13,14 +13,13 @@
    See the License for the specific language governing permissions and
    limitations under the License.
 */
-import * as fs from "fs";
-import * as http from "http";
-import * as querystring from "querystring";
+import fs from "node:fs";
+import http from "node:http";
+import querystring from "node:querystring";
 import * as yaml from "js-yaml";
 import { OpenAPIV2 } from "openapi-types";
 import * as apid from "../api";
-import { IncomingHttpHeaders } from "http";
-const pkg = require("../package.json");
+import pkg from "../package.json";
 const spec = yaml.load(fs.readFileSync(__dirname + "/../api.yml", "utf8")) as OpenAPIV2.Document;
 
 export type RequestMethod = "GET" | "POST" | "PUT" | "DELETE";
@@ -42,7 +41,7 @@ export interface Response {
     status: number;
     statusText: string;
     contentType: string;
-    headers: IncomingHttpHeaders;
+    headers: http.IncomingHttpHeaders;
     isSuccess: boolean;
     body?: any | string | Buffer;
 }

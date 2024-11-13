@@ -22,7 +22,7 @@ import _ from "../../../_";
 
 let isScanning = false;
 
-const compareOptions = {
+const compareOptions: Intl.CollatorOptions = {
     sensitivity: "base",
     numeric: true
 };
@@ -296,13 +296,7 @@ export const put: Operation = async (req, res) => {
         res.write("\n");
     }
 
-    result.sort((a, b) => {
-        if (a.type === b.type) {
-            return a.channel.localeCompare(b.channel, undefined, compareOptions);
-        } else {
-            return channelOrder[a.type] - channelOrder[b.type];
-        }
-    });
+    result.sort((a, b) => a.type === b.type ? a.channel.localeCompare(b.channel, undefined, compareOptions) : channelOrder[a.type] - channelOrder[b.type]);
 
     res.write(`-> new ${newCount} channels found.\n`);
     res.write(`-> existing ${takeoverCount} channels merged.\n`);

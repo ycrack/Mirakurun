@@ -13,10 +13,9 @@
    See the License for the specific language governing permissions and
    limitations under the License.
 */
-import { dirname } from "path";
-import { promises as fsPromises } from "fs";
-import * as fs from "fs";
-import * as common from "./common";
+import { dirname } from "node:path";
+import fs from "node:fs";
+import type { ChannelType } from "./common";
 import * as log from "./log";
 
 export interface Service {
@@ -36,7 +35,7 @@ export interface Service {
 }
 
 export interface Channel {
-    type: common.ChannelType;
+    type: ChannelType;
     channel: string;
 }
 
@@ -199,7 +198,7 @@ async function save(path: string, data: any[], integrity: string, retrying = fal
     data.unshift({ __integrity__: integrity });
 
     try {
-        await fsPromises.writeFile(path, JSON.stringify(data));
+        await fs.promises.writeFile(path, JSON.stringify(data));
     } catch (e) {
         if (retrying === false) {
             // mkdir if not exists

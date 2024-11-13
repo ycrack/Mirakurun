@@ -13,8 +13,7 @@
    See the License for the specific language governing permissions and
    limitations under the License.
 */
-import * as React from "react";
-import { useState } from "react";
+import React from "react";
 import {
     getTheme,
     FontWeights,
@@ -38,7 +37,7 @@ function selectHandler(e: React.MouseEvent<HTMLInputElement>) {
 
 const ConnectionGuide: React.FC = () => {
 
-    const [isModalOpen, setModalOpen] = useState<boolean>(false);
+    const [isModalOpen, setModalOpen] = React.useState<boolean>(false);
 
     const theme = getTheme();
     const contentStyles = mergeStyleSets({

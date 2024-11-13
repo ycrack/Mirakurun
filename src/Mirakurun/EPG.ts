@@ -15,10 +15,17 @@
 */
 import { getProgramItemId } from "./Program";
 import { getTimeFromMJD, getTimeFromBCD24 } from "./common";
-import * as db from "./db";
+import type {
+    ProgramAudio,
+    ProgramAudioLanguageCode,
+    ProgramGenre,
+    ProgramRelatedItem,
+    ProgramVideoResolution,
+    ProgramVideoType
+} from "./db";
 import _ from "./_";
 import { TsChar } from "@chinachu/aribts";
-import { EIT } from "@chinachu/aribts/lib/table/eit";
+import type { EIT } from "@chinachu/aribts/lib/table/eit";
 
 const STREAM_CONTENT = {
     1: "mpeg2",
@@ -117,14 +124,14 @@ interface EventState {
     };
     audio: {
         version: VersionRecord<VersionRecord>; // basic
-        _audios: { [componentTag: number]: db.ProgramAudio };
+        _audios: { [componentTag: number]: ProgramAudio; };
     };
     series: {
         version: VersionRecord; // basic
     };
     group: {
         version: VersionRecord<VersionRecord>; // basic
-        _groups: db.ProgramRelatedItem[][];
+        _groups: ProgramRelatedItem[][];
     };
 
     present?: true;
@@ -133,7 +140,7 @@ interface EventState {
 // forked from rndomhack/node-aribts/blob/1e7ef94bba3d6ac26aec764bf24dde2c2852bfcb/lib/epg.js
 export default class EPG {
 
-    private _epg: { [networkId: number]: { [serviceId: number]: { [eventId: number]: EventState } } } = {};
+    private _epg: { [networkId: number]: { [serviceId: number]: { [eventId: number]: EventState; }; }; } = {};
 
     write(eit: EIT) {
 
@@ -282,8 +289,8 @@ export default class EPG {
                             for (const descs of state.extended._descs) {
                                 for (const desc of descs) {
                                     const key = desc.item_description_length === 0
-                                                ? current
-                                                : new TsChar(desc.item_description_char).decode();
+                                        ? current
+                                        : new TsChar(desc.item_description_char).decode();
                                     current = key;
                                     extended[key] = extended[key] ?
                                         Buffer.concat([extended[key], desc.item_char]) :
@@ -313,8 +320,8 @@ export default class EPG {
 
                         _.program.set(state.programId, {
                             video: {
-                                type: <db.ProgramVideoType> STREAM_CONTENT[d.stream_content] || null,
-                                resolution: <db.ProgramVideoResolution> COMPONENT_TYPE[d.component_type] || null,
+                                type: <ProgramVideoType>STREAM_CONTENT[d.stream_content] || null,
+                                resolution: <ProgramVideoResolution>COMPONENT_TYPE[d.component_type] || null,
 
                                 streamContent: d.stream_content,
                                 componentType: d.component_type
@@ -440,7 +447,7 @@ function isOutOfDateLv2(eit: EIT, versionRecord: VersionRecord<VersionRecord>, l
     return versionRecord[eit.table_id][lv2] !== eit.version_number;
 }
 
-function getGenre(content: any): db.ProgramGenre {
+function getGenre(content: any): ProgramGenre {
     return {
         lv1: content.content_nibble_level_1,
         lv2: content.content_nibble_level_2,
@@ -449,16 +456,16 @@ function getGenre(content: any): db.ProgramGenre {
     };
 }
 
-function getLangCode(buffer: Buffer): db.ProgramAudioLanguageCode {
+function getLangCode(buffer: Buffer): ProgramAudioLanguageCode {
     for (const code in ISO_639_LANG_CODE) {
         if (ISO_639_LANG_CODE[code].compare(buffer) === 0) {
-            return code as db.ProgramAudioLanguageCode;
+            return code as ProgramAudioLanguageCode;
         }
     }
     return "etc";
 }
 
-function getRelatedProgramItem(event: any): db.ProgramRelatedItem {
+function getRelatedProgramItem(event: any): ProgramRelatedItem {
     return {
         type: (
             this.group_type === 1 ? "shared" :

@@ -13,9 +13,8 @@
    See the License for the specific language governing permissions and
    limitations under the License.
 */
-import EventEmitter from "eventemitter3";
-import * as React from "react";
-import { useState, useEffect } from "react";
+import type { EventEmitter } from "eventemitter3";
+import React, { useState, useEffect } from "react";
 import {
     Stack,
     Separator,
@@ -24,7 +23,7 @@ import {
     ITooltipHostStyles,
     ITooltipProps
 } from "@fluentui/react";
-import { UIState } from "../index";
+import type { UIState } from "../index";
 import TunersManager from "./TunersManager";
 
 interface StatusItem {

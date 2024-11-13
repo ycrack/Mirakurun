@@ -13,7 +13,7 @@
    See the License for the specific language governing permissions and
    limitations under the License.
 */
-import * as express from "express";
+import type { Response } from "express";
 
 export interface Error {
     readonly code: number;
@@ -21,7 +21,7 @@ export interface Error {
     readonly errors: any[];
 }
 
-export function responseError(res: express.Response, code: number, reason?: string): express.Response {
+export function responseError(res: Response, code: number, reason?: string): Response {
 
     if (reason) {
         res.writeHead(code, reason, {
@@ -44,7 +44,7 @@ export function responseError(res: express.Response, code: number, reason?: stri
     return res;
 }
 
-export function responseStreamErrorHandler(res: express.Response, err: NodeJS.ErrnoException): express.Response {
+export function responseStreamErrorHandler(res: Response, err: NodeJS.ErrnoException): Response {
 
     if (err.message === "no available tuners") {
         return responseError(res, 503, "Tuner Resource Unavailable");
@@ -53,7 +53,7 @@ export function responseStreamErrorHandler(res: express.Response, err: NodeJS.Er
     return responseError(res, 500, err.message);
 }
 
-export function responseJSON(res: express.Response, body: any): express.Response {
+export function responseJSON(res: Response, body: any): Response {
 
     // this is lighter than res.json()
     res.setHeader("Content-Type", "application/json; charset=utf-8");

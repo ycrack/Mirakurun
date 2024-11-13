@@ -13,7 +13,7 @@
    See the License for the specific language governing permissions and
    limitations under the License.
 */
-import * as common from "./common";
+import type { ChannelType } from "./common";
 import * as log from "./log";
 import _ from "./_";
 import status from "./status";
@@ -45,7 +45,7 @@ export default class Channel {
         }
     }
 
-    get(type: common.ChannelType, channel: string): ChannelItem {
+    get(type: ChannelType, channel: string): ChannelItem {
 
         const l = this._items.length;
         for (let i = 0; i < l; i++) {
@@ -57,7 +57,7 @@ export default class Channel {
         return null;
     }
 
-    findByType(type: common.ChannelType): ChannelItem[] {
+    findByType(type: ChannelType): ChannelItem[] {
 
         const items = [];
 

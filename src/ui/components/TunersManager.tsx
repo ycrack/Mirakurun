@@ -13,8 +13,7 @@
    See the License for the specific language governing permissions and
    limitations under the License.
 */
-import * as React from "react";
-import { useState, useEffect } from "react";
+import React from "react";
 import {
     Text,
     Icon,
@@ -31,7 +30,7 @@ import {
     IconButton,
     ColorClassNames
 } from "@fluentui/react";
-import { TunerDevice } from "../../../api";
+import type { TunerDevice } from "../../../api";
 
 interface Item {
     _group: string;
@@ -91,7 +90,7 @@ const onRenderCell = (nestingDepth: number, item: Item, itemIndex: number) => {
 
 const TunersManager: React.FC<{ tuners: TunerDevice[] }> = ({ tuners }) => {
 
-    const [killTarget, setKillTarget] = useState<number>(null);
+    const [killTarget, setKillTarget] = React.useState<number>(null);
 
     const items: Item[] = [];
     for (const tuner of tuners) {

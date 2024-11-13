@@ -13,17 +13,17 @@
    See the License for the specific language governing permissions and
    limitations under the License.
 */
-import { Writable } from "stream";
-import EventEmitter = require("eventemitter3");
+import type { Writable } from "node:stream";
+import { EventEmitter } from "eventemitter3";
 import { TsStreamLite, TsCrc32, TsChar, TsLogo, tsDataModule } from "@chinachu/aribts";
-import { StreamInfo, getTimeFromMJD } from "./common";
+import { getTimeFromMJD, type StreamInfo } from "./common";
 import * as log from "./log";
 import EPG from "./EPG";
 import status from "./status";
 import _ from "./_";
 import { getProgramItemId } from "./Program";
 import Service from "./Service";
-import ServiceItem from "./ServiceItem";
+import type ServiceItem from "./ServiceItem";
 
 interface TSFilterOptions {
     readonly output?: Writable;
@@ -114,7 +114,7 @@ export default class TSFilter extends EventEmitter {
     // epg
     private _epg: EPG;
     private _epgReady = false;
-    private _epgState: { [networkId: number]: { [serviceId: number]: BasicExtState } } = {};
+    private _epgState: { [networkId: number]: { [serviceId: number]: BasicExtState; }; } = {};
 
     // buffer
     private _packet = Buffer.allocUnsafeSlow(PACKET_SIZE).fill(0);
@@ -132,14 +132,14 @@ export default class TSFilter extends EventEmitter {
     private _serviceIds = new Set<number>();
     private _parseServiceIds = new Set<number>();
     private _pmtPid = -1;
-    private _pmtTimer: NodeJS.Timer;
+    private _pmtTimer: NodeJS.Timeout;
     private _streamTime: number = null;
     private _essMap = new Map<number, number>(); // <serviceId, pid>
     private _essEsPids = new Set<number>();
     private _dlDataMap = new Map<number, DownloadData>();
-    private _logoDataTimer: NodeJS.Timer;
+    private _logoDataTimer: NodeJS.Timeout;
     private _provideEventLastDetectedAt = -1;
-    private _provideEventTimeout: NodeJS.Timer = null;
+    private _provideEventTimeout: NodeJS.Timeout = null;
 
     /** Number divisible by a multiple of 188 */
     private _maxBufferBytesBeforeReady: number = (() => {
@@ -154,8 +154,8 @@ export default class TSFilter extends EventEmitter {
 
         const enabletsmf = options.tsmfRelTs || 0;
         if (enabletsmf !== 0) {
-                this._tsmfEnableTsmfSplit = true;
-                this._tsmfTsNumber = options.tsmfRelTs;
+            this._tsmfEnableTsmfSplit = true;
+            this._tsmfTsNumber = options.tsmfRelTs;
         }
 
         this._targetNetworkId = options.networkId || null;
@@ -842,7 +842,7 @@ export default class TSFilter extends EventEmitter {
             );
         }
 
-        const logoIdNetworkMap: { [networkId: number]: Set<number> } = {};
+        const logoIdNetworkMap: { [networkId: number]: Set<number>; } = {};
 
         for (const service of targetServices) {
             if (typeof service.logoId === "number") {
@@ -983,7 +983,7 @@ export default class TSFilter extends EventEmitter {
         }
 
         // update ignore field (segment)
-        for (let i = lastSegmentNumber + 1; i < 0x20 ; i++) {
+        for (let i = lastSegmentNumber + 1; i < 0x20; i++) {
             targetFlag.ignore[i] = 0xFF;
         }
 

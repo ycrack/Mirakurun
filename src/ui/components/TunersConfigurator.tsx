@@ -13,9 +13,8 @@
    See the License for the specific language governing permissions and
    limitations under the License.
 */
-import EventEmitter from "eventemitter3";
-import * as React from "react";
-import { useState, useEffect, useRef } from "react";
+import type { EventEmitter } from "eventemitter3";
+import React, { useState, useEffect, useRef } from "react";
 import {
     Stack,
     Spinner,
@@ -36,8 +35,8 @@ import {
     IconButton,
     ActionButton
 } from "@fluentui/react";
-import { UIState } from "../index";
-import { ConfigTuners, ChannelType } from "../../../api";
+import type { UIState } from "../index";
+import type { ConfigTuners, ChannelType } from "../../../api";
 
 const configAPI = "/api/config/tuners";
 
@@ -123,7 +122,7 @@ const Configurator: React.FC<{ uiState: UIState, uiStateEvents: EventEmitter }> 
         })();
     }, [saved]);
 
-    const items = [];
+    const items: Item[] = [];
     editing?.forEach((tuner, i) => {
         const item: Item = {
             key: `item${i}`,
@@ -158,7 +157,7 @@ const Configurator: React.FC<{ uiState: UIState, uiStateEvents: EventEmitter }> 
                     ]}
                     selectedKeys={tuner.types}
                     onChange={(ev, option) => {
-                        if (option.selected === true) {
+                        if (option?.selected === true) {
                             tuner.types.push(option.key as any);
                             tuner.types = sortTypes(tuner.types);
                         } else {

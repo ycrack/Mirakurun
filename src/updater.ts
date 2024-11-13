@@ -13,8 +13,8 @@
    See the License for the specific language governing permissions and
    limitations under the License.
 */
-import { spawn, ChildProcess } from "child_process";
-import { openSync } from "fs";
+import { spawn, type ChildProcess } from "node:child_process";
+import { openSync } from "node:fs";
 import { getLatestVersion } from "./Mirakurun/system";
 const pkg = require("../package.json");
 

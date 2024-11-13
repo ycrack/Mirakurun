@@ -13,19 +13,19 @@
    See the License for the specific language governing permissions and
    limitations under the License.
 */
-import * as child_process from "child_process";
-import * as stream from "stream";
-import * as util from "util";
-import EventEmitter = require("eventemitter3");
+import { spawn, type ChildProcess } from "node:child_process";
+import type { Readable } from "node:stream";
+import util from "node:util";
+import { EventEmitter } from "eventemitter3";
 import * as common from "./common";
 import * as log from "./log";
 import * as config from "./config";
-import * as apid from "../../api";
+import type { Program } from "../../api";
 import status from "./status";
 import Event from "./Event";
-import ChannelItem from "./ChannelItem";
-import TSFilter from "./TSFilter";
-import Client, { ProgramsQuery } from "../client";
+import type ChannelItem from "./ChannelItem";
+import type TSFilter from "./TSFilter";
+import Client, { type ProgramsQuery } from "../client";
 
 interface User extends common.User {
     _stream?: TSFilter;
@@ -49,8 +49,8 @@ export default class TunerDevice extends EventEmitter {
 
     private _channel: ChannelItem = null;
     private _command: string = null;
-    private _process: child_process.ChildProcess = null;
-    private _stream: stream.Readable = null;
+    private _process: ChildProcess = null;
+    private _stream: Readable = null;
 
     private _users = new Set<User>();
 
@@ -223,7 +223,7 @@ export default class TunerDevice extends EventEmitter {
         this._updated();
     }
 
-    async getRemotePrograms(query?: ProgramsQuery): Promise<apid.Program[]> {
+    async getRemotePrograms(query?: ProgramsQuery): Promise<Program[]> {
 
         if (!this._isRemote) {
             throw new Error(util.format("TunerDevice#%d is not remote device", this._index));
@@ -288,12 +288,12 @@ export default class TunerDevice extends EventEmitter {
             cmd = cmd.replace("<polarity>", ch.polarity);
         }
 
-        this._process = child_process.spawn(cmd.split(" ")[0], cmd.split(" ").slice(1));
+        this._process = spawn(cmd.split(" ")[0], cmd.split(" ").slice(1));
         this._command = cmd;
         this._channel = ch;
 
         if (this._config.dvbDevicePath) {
-            const cat = child_process.spawn("cat", [this._config.dvbDevicePath]);
+            const cat = spawn("cat", [this._config.dvbDevicePath]);
 
             cat.once("error", (err) => {
 
